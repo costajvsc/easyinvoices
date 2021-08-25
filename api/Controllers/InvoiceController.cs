@@ -21,5 +21,17 @@ namespace api.Controllers
         [Route("/invoices")]
         public async Task<IActionResult> Index()
             => StatusCode(200, await _context.Invoices.ToListAsync());
+
+                [HttpGet]
+        [Route("/invoices/{id}")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.Id == id);
+
+            if(id == null || invoice == null)
+                return NotFound();
+
+            return StatusCode(200, invoice);
+        }
     }
 }
