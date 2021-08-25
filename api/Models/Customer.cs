@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace api.Models
 {
@@ -9,7 +10,7 @@ namespace api.Models
     public partial class Customer
     {
         [Key]
-        public int IdCustomer { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Razão Social é obrigatório")]
         [MaxLength(50)]
@@ -31,6 +32,10 @@ namespace api.Models
         [Required(ErrorMessage = "O campo Telefone é obrigatório")]
         [MaxLength(14)]
         public string PhoneNumber { get; set; }
+        
+
+        [JsonIgnore] 
+        public List<Invoice> Invoices { get; set; }
     }
 }
     

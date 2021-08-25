@@ -8,7 +8,7 @@ namespace api.Models
     public partial class Invoice 
     {
         [Key]
-        public int IdInvoice { get; set; }
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Data de Contratação é obrigatório.")]
         public DateTime ContractDate { get; set; }
@@ -20,11 +20,7 @@ namespace api.Models
         [Required(ErrorMessage = "O campo Dia de cobrança é Obrigatório")]
         public int BillingDay { get; set; }
 
-        public int IdCustomer { get; set; }
         public Customer Customer { get; set; }
-
-        public int IdPlan { get; set; }
         public Plan Plan { get; set; }
-    
     }
 }
