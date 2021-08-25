@@ -33,5 +33,18 @@ namespace api.Controllers
 
             return StatusCode(200, invoice);
         }
+
+
+        [HttpPost]
+        [Route("/invoices")]
+        public async Task<IActionResult> Create([Bind("ContractDate, BillingMethod, BillingDay, CustomerId, PlanId")]Invoice invoice)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, invoice);
+            
+            _context.Invoices.Add(invoice);
+            await _context.SaveChangesAsync();
+            return StatusCode(201, invoice);
+        }
     }
 }
