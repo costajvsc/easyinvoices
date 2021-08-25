@@ -31,5 +31,17 @@ namespace api.Controllers
 
             return StatusCode(200, customer);
         }
+
+        [HttpPost]
+        [Route("/customers")]
+        public async Task<IActionResult> Create([Bind("CorporateName, FantasyName, CNPJ, AgentName, AgentEmail, PhoneNumber")] Customer customer)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, customer);
+            
+            _context.Add(customer);
+            await _context.SaveChangesAsync();
+            return StatusCode(201, customer);
+        }
     }
 }
