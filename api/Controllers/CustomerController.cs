@@ -43,5 +43,32 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201, customer);
         }
+
+        [HttpPut]
+        [Route("/customers/{id}")]
+        public async Task<IActionResult> Edit(int id, [Bind("CorporateName, FantasyName, CNPJ, AgentName, AgentEmail, PhoneNumber")] Customer customer)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, customer);
+
+            try
+            {
+                customer.Id = id;
+                _context.Customers.Update(customer);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if(!CustomerExist(id))
+                    return NotFound();
+            }
+
+            return StatusCode(200, customer);
+        }
+
+        private bool CustomerExist(int id)
+        {
+            return _context.Customers.Any(c => c.Id == id);
+        }
     }
 }
