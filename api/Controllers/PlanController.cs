@@ -69,6 +69,16 @@ namespace api.Controllers
             return StatusCode(200, plan);
         }
 
+        [HttpDelete]
+        [Route("/plans/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var plan = await _context.Plans.FindAsync(id);
+            _context.Remove(plan);
+            await _context.SaveChangesAsync();
+            return StatusCode(204);
+        }
+
         private bool PlanExist(int id)
         {
             return _context.Plans.Any(p => p.Id == id);
