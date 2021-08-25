@@ -46,5 +46,32 @@ namespace api.Controllers
             await _context.SaveChangesAsync();
             return StatusCode(201, invoice);
         }
+
+        [HttpPut]
+        [Route("/invoices/{id}")]
+        public async Task<IActionResult> Edit(int id, [Bind("ContractDate, BillingMethod, BillingDay, CustomerId, PlanId")]Invoice invoice)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, invoice);
+
+            try
+            {
+                invoice.Id = id;
+                _context.Invoices.Update(invoice);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if(!InvoiceExist(id))
+                    return StatusCode(404, invoice);
+            }
+
+            return StatusCode(200, invoice);
+        }
+        
+        private bool InvoiceExist(int id)
+        {
+            return _context.Invoices.Any(i => i.Id == id);
+        }
     }
 }
