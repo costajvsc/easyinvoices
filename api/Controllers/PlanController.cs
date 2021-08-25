@@ -32,5 +32,19 @@ namespace api.Controllers
 
             return StatusCode(200, plan);
         }
+
+
+        [HttpPost]
+        [Route("/plans")]
+        public async Task<IActionResult> Create([Bind("Title, Price")] Plan plan)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, plan);
+
+            _context.Add(plan);
+            await _context.SaveChangesAsync();
+            return StatusCode(201, plan);
+        }
+
     }   
 }
