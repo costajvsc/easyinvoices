@@ -46,5 +46,32 @@ namespace api.Controllers
             return StatusCode(201, plan);
         }
 
+
+        [HttpPut]
+        [Route("/plans/{id}")]
+        public async Task<IActionResult> Edit(int id, [Bind("Title, Price")] Plan plan)
+        {
+            if(!ModelState.IsValid)
+                return StatusCode(404, plan);
+
+            try
+            {
+                plan.Id = id;
+                _context.Plans.Update(plan);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if(!PlanExist(id))
+                    return NotFound();
+            }
+
+            return StatusCode(200, plan);
+        }
+
+        private bool PlanExist(int id)
+        {
+            return _context.Plans.Any(p => p.Id == id);
+        }
     }   
 }
