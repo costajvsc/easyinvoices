@@ -66,6 +66,17 @@ namespace api.Controllers
             return StatusCode(200, customer);
         }
 
+        [HttpDelete]
+        [Route("/customers/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var customer = await _context.Customers.FindAsync(id);
+            _context.Remove(customer);
+            await _context.SaveChangesAsync();
+            
+            return StatusCode(204);
+        }
+
         private bool CustomerExist(int id)
         {
             return _context.Customers.Any(c => c.Id == id);
