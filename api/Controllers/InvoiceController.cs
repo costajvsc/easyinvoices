@@ -68,7 +68,17 @@ namespace api.Controllers
 
             return StatusCode(200, invoice);
         }
-        
+
+        [HttpDelete]
+        [Route("/invoices/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.Id == id);
+            _context.Remove(invoice);
+            await _context.SaveChangesAsync();
+            return StatusCode(204);
+        }
+
         private bool InvoiceExist(int id)
         {
             return _context.Invoices.Any(i => i.Id == id);
