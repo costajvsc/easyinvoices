@@ -21,5 +21,16 @@ namespace api.Controllers
         public async Task<IActionResult> Index()
             => StatusCode(200, await _context.Plans.ToListAsync());
         
+                [HttpGet]
+        [Route("/plans/{id}")]
+        public async Task<IActionResult> Details(int? id)
+        {
+            var plan = await _context.Plans.FirstOrDefaultAsync(p => p.Id == id);
+
+            if(id == null || plan == null)
+                return NotFound();
+
+            return StatusCode(200, plan);
+        }
     }   
 }
