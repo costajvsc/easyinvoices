@@ -20,7 +20,11 @@ namespace api.Models
         [Required(ErrorMessage = "O campo Dia de cobrança é Obrigatório")]
         public int BillingDay { get; set; }
 
+        public int CustomerId { get; set; }
+
         public Customer Customer { get; set; }
+
+        public int PlanId { get; set; }
         public Plan Plan { get; set; }
     }
 }
