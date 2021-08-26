@@ -43,7 +43,14 @@ namespace api.Controllers
         public async Task<IActionResult> Details(int id)
         {
             if(!InvoiceExist(id))
-                return NotFound();
+                return StatusCode(400, new {
+                    Message =  "Error to find this Invoice.",
+                    Error = $"Not found any invoice with this Id: {id}",
+                    Data = new {
+                        Id = id
+                    }
+                });
+
 
             var invoice = await (from i in _context.Invoices
                                 join c in _context.Customers on i.Customer equals c
@@ -63,7 +70,6 @@ namespace api.Controllers
             return StatusCode(200, invoice);
         }
 
-
         [HttpPost]
         [Route("/invoices")]
         public async Task<IActionResult> Create([Bind("ContractDate, BillingMethod, BillingDay, CustomerId, PlanId")]Invoice invoice)
@@ -73,7 +79,10 @@ namespace api.Controllers
             
             _context.Invoices.Add(invoice);
             await _context.SaveChangesAsync();
-            return StatusCode(201, invoice);
+             return StatusCode(201, new {
+                Message = $"Invoice {invoice.Id} was created with success.",
+                Data = invoice
+            });
         }
 
         [HttpPut]
@@ -92,10 +101,17 @@ namespace api.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if(!InvoiceExist(id))
-                    return StatusCode(404, invoice);
+                    return StatusCode(400, new {
+                        Message = $"Cannot updated the {invoice.Id} invoice.",
+                        Error = $"Not found any invoice with this Id: {id}",
+                        Data = invoice
+                    });
             }
 
-            return StatusCode(200, invoice);
+            return StatusCode(200, new {
+                Message = $"Invoice {invoice.Id} was updated with success.",
+                Data = invoice
+            });
         }
 
         [HttpDelete]
@@ -103,6 +119,13 @@ namespace api.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.Id == id);
+            if(invoice == null)
+                return StatusCode(404, new {
+                    Message =  "Error to delete this invoice.",
+                    Error = "This invoice was not found."
+                });
+
+
             _context.Remove(invoice);
             await _context.SaveChangesAsync();
             return StatusCode(204);

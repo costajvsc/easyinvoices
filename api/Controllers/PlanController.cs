@@ -21,14 +21,20 @@ namespace api.Controllers
         public async Task<IActionResult> Index()
             => StatusCode(200, await _context.Plans.ToListAsync());
         
-                [HttpGet]
+        [HttpGet]
         [Route("/plans/{id}")]
         public async Task<IActionResult> Details(int? id)
         {
             var plan = await _context.Plans.FirstOrDefaultAsync(p => p.Id == id);
 
             if(id == null || plan == null)
-                return NotFound();
+                return StatusCode(400, new {
+                    Message =  "Error to find this plan.",
+                    Error = $"Not found any plan with this Id: {id}",
+                    Data = new {
+                        Id = id
+                    }
+                });
 
             return StatusCode(200, plan);
         }
@@ -43,7 +49,10 @@ namespace api.Controllers
 
             _context.Add(plan);
             await _context.SaveChangesAsync();
-            return StatusCode(201, plan);
+            return StatusCode(201, new {
+                Message = $"Plan {plan.Title} was created with success.",
+                Data = plan
+            });
         }
 
 
@@ -63,10 +72,17 @@ namespace api.Controllers
             catch (DbUpdateConcurrencyException)
             {
                 if(!PlanExist(id))
-                    return NotFound();
+                    return StatusCode(400, new {
+                        Message = $"Cannot updated the {plan.Title} plan.",
+                        Error = $"Not found any plan with this Id: {id}",
+                        Data = plan
+                    });
             }
 
-            return StatusCode(200, plan);
+            return StatusCode(200, new {
+                Message = $"Plan {plan.Title} was updated with success.",
+                Data = plan
+            });
         }
 
         [HttpDelete]
@@ -82,13 +98,13 @@ namespace api.Controllers
             var plan = await _context.Plans.FindAsync(id);
             if(plan == null)
                 return StatusCode(404, new {
-                    Message =  "Error to delete plan.",
+                    Message =  "Error to delete this plan.",
                     Error = "This plan was not found."
                 });
             
             _context.Remove(plan);
             await _context.SaveChangesAsync();
-            
+
             return StatusCode(204);
         }
 
