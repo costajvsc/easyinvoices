@@ -20,16 +20,45 @@ namespace api.Controllers
         [HttpGet]
         [Route("/invoices")]
         public async Task<IActionResult> Index()
-            => StatusCode(200, await _context.Invoices.ToListAsync());
-
-                [HttpGet]
-        [Route("/invoices/{id}")]
-        public async Task<IActionResult> Details(int? id)
         {
-            var invoice = await _context.Invoices.FirstOrDefaultAsync(i => i.Id == id);
+            var invoices = await (from i in _context.Invoices
+                                join c in _context.Customers on i.Customer equals c
+                                join p in _context.Plans on i.Plan equals p
+                                select new {
+                                    Id = i.Id,
+                                    ContractDate = i.ContractDate,
+                                    BillingMethod = i.BillingMethod,
+                                    BillingDay = i.BillingDay,
+                                    Title = p.Title,
+                                    Price = p.Price,
+                                    FantasyName  = c.FantasyName,
+                                    AgentName = c.AgentName
+                                }).ToListAsync();
 
-            if(id == null || invoice == null)
+            return StatusCode(200, invoices);
+        }
+
+        [HttpGet]
+        [Route("/invoices/{id}")]
+        public async Task<IActionResult> Details(int id)
+        {
+            if(!InvoiceExist(id))
                 return NotFound();
+
+            var invoice = await (from i in _context.Invoices
+                                join c in _context.Customers on i.Customer equals c
+                                join p in _context.Plans on i.Plan equals p
+                                where i.Id == id
+                                select new {
+                                    Id = i.Id,
+                                    ContractDate = i.ContractDate,
+                                    BillingMethod = i.BillingMethod,
+                                    BillingDay = i.BillingDay,
+                                    Title = p.Title,
+                                    Price = p.Price,
+                                    FantasyName  = c.FantasyName,
+                                    AgentName = c.AgentName
+                                }).FirstAsync();
 
             return StatusCode(200, invoice);
         }
