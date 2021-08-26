@@ -70,7 +70,20 @@ namespace api.Controllers
         [Route("/customers/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            var existCustomer =_context.Invoices.Any(i => i.CustomerId == id);
+            if(existCustomer)
+                return StatusCode(404, new {
+                    Message =  "This customer cannot to be deleted.",
+                    Error = "This customer has been used on a couple invoices."
+                });
+            
             var customer = await _context.Customers.FindAsync(id);
+            if(customer == null)
+                return StatusCode(404, new {
+                    Message =  "Error to delete customer.",
+                    Error = "This customer was not found."
+                });
+
             _context.Remove(customer);
             await _context.SaveChangesAsync();
             

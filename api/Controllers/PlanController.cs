@@ -73,9 +73,22 @@ namespace api.Controllers
         [Route("/plans/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            if(_context.Invoices.Any(i => i.PlanId == id))
+                return StatusCode(404, new {
+                    Message =  "This plan cannot to be deleted.",
+                    Error = "This plan has been used on a couple invoices."
+                });
+
             var plan = await _context.Plans.FindAsync(id);
+            if(plan == null)
+                return StatusCode(404, new {
+                    Message =  "Error to delete plan.",
+                    Error = "This plan was not found."
+                });
+            
             _context.Remove(plan);
             await _context.SaveChangesAsync();
+            
             return StatusCode(204);
         }
 
