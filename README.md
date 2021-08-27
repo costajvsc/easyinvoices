@@ -53,8 +53,6 @@ Easyinvoces is a project to help you manage your customers invoices. With easyin
 
 Easyinvoces was built with those frameworks and library. 
 * [.Net 5](https://dotnet.microsoft.com/download/dotnet/5.0)
-* [Angular](https://angular.io)
-* [Bootstrap](https://getbootstrap.com)
 
 ## Getting Started
 
