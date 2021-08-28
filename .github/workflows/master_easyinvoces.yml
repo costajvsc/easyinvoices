@@ -53,5 +53,5 @@ jobs:
       with:
         app-name: 'easyinvoces'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_294d6f97143c4a31a7ff04bd370fa401 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_7b59c9810a8c4bbb8a8ed2a5a7471eb3 }}
         package: .
