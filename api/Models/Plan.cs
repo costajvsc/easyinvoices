@@ -11,6 +11,7 @@ namespace api.Models
     public partial class Plan
     {
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Título é obrigatório.")]

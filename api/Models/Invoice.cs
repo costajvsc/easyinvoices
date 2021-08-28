@@ -1,6 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace api.Models
 {
@@ -8,6 +9,7 @@ namespace api.Models
     public partial class Invoice 
     {
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Data de Contratação é obrigatório.")]

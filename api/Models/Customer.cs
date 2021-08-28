@@ -10,6 +10,7 @@ namespace api.Models
     public partial class Customer
     {
         [Key]
+        [JsonIgnore]
         public int Id { get; set; }
 
         [Required(ErrorMessage = "O campo Razão Social é obrigatório")]
